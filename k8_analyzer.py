@@ -95,7 +95,7 @@ def get_health_status(pod):
     status = pod.get("status","unknown")
     restarts = pod.get("restarts",0)
 
-    if not validate_pod(pod):
+    if not validate_pod(pod) or status.lower() == "unknown":
         return "INVALID"
 
     if status == "CrashLoopBackOff" or restarts > 10:
@@ -108,7 +108,8 @@ def get_health_status(pod):
 
 for pod in pods:
     health = get_health_status(pod)
-    print (f" {pod['name']}  {health}")
+    name = pod.get("name", "unknown")
+    print (f" {name}  {health}")
 
 # for pod in pods:
 #     if not validate_pod(pod):
