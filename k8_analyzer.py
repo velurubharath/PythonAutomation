@@ -74,7 +74,25 @@ def validate_pod(pod):
             return False
             
     return True
+
+#Process pods to get counts of statuses and namespaces with default values for missing fields
+def process_pods(pods):
+    status_counts = {}
+    namespace_counts = {}
     
+    for pod in pods:
+        status = pod.get("status","unknown")
+        namespace = pod.get("namespace","default")
+        restarts = pod.get("restarts",0)
+        
+        status_counts[status] = status_counts.get("status",0)+1
+        namespace_counts[namespace] = namespace_counts.get("namespace",0)+1
+        
+    return status_counts, namespace_counts
+
+status_counts, namespace_counts = process_pods(pods)
+print("Status Counts:", status_counts)
+print("Namespace Counts:", namespace_counts)
     
 # for pod in pods:
 #     if not validate_pod(pod):
