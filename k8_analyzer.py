@@ -5,6 +5,7 @@ pods = [
     {"name": "inventory-api-1", "namespace": "prod", "restarts": 15, "status": "CrashLoopBackOff"},
     {"name": "frontend-1", "namespace": "dev", "restarts": 2, "status": "Running"},
     {"name": "worker-1", "namespace": "dev", "restarts": 9, "status": "Running"},
+    {"name": "worker-2", "namespace": "dev"}
 ]
 
 ##Function for getting pods with high restarts based on a threshold
@@ -62,8 +63,23 @@ def check_alert(pods):
     for pod in pods:
         if pod["restarts"] > 10 or pod["status"] == "CrashLoopBackOff" :
             print(f"ALERT: {pod['name']} requires investigation")
+
+
+#Validate if the pod has all the required fields
+def validate_pod(pod):
+    required_fields = ["namespace","status","restarts","name"]
+    
+    for field in required_fields:
+        if field not in pod:
+            return False
             
-check_alert(pods)
+    return True
+    
+    
+# for pod in pods:
+#     if not validate_pod(pod):
+#         print(f" Pod {pod['name']} has not proper data")
+#check_alert(pods)
 
 # status_counts = get_status_count(pods)
 
