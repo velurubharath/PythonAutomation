@@ -5,7 +5,7 @@ pods = [
     {"name": "inventory-api-1", "namespace": "prod", "restarts": 15, "status": "CrashLoopBackOff"},
     {"name": "frontend-1", "namespace": "dev", "restarts": 2, "status": "Running"},
     {"name": "worker-1", "namespace": "dev", "restarts": 9, "status": "Running"},
-    {"name": "worker-2", "namespace": "dev"}
+    {"name": "worker-2"}
 ]
 
 ##Function for getting pods with high restarts based on a threshold
@@ -85,14 +85,34 @@ def process_pods(pods):
         namespace = pod.get("namespace","default")
         restarts = pod.get("restarts",0)
         
-        status_counts[status] = status_counts.get("status",0)+1
-        namespace_counts[namespace] = namespace_counts.get("namespace",0)+1
+        status_counts[status] = status_counts.get(status,0)+1
+        namespace_counts[namespace] = namespace_counts.get(namespace,0)+1
         
     return status_counts, namespace_counts
 
-status_counts, namespace_counts = process_pods(pods)
-print("Status Counts:", status_counts)
-print("Namespace Counts:", namespace_counts)
+
+def get_health_status(pod):
+    status = pod.get("status","unknown")
+    restarts = pod.get("restarts",0)
+
+    if not validate_pod(pod):
+        return "INVALID"
+
+    if status == "CrashLoopBackOff" or restarts > 10:
+        return "CRITICAL"
+    elif restarts  > 5:
+        return "WARNING"
+    else:
+        return"HEALTHY"
+    
+
+for pod in pods:
+    health = get_health_status(pod)
+    print (f" {pod['name']}  {health}")
+
+# for pod in pods:
+#     if not validate_pod(pod):
+#         print (f"Pod name {pod['name']} has improper data")
     
 # for pod in pods:
 #     if not validate_pod(pod):
