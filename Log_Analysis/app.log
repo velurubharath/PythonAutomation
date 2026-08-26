@@ -1,0 +1,13 @@
+2026-08-26 10:00:01 INFO payment-api Request received
+2026-08-26 10:00:02 INFO checkout-api Request received
+2026-08-26 10:00:03 ERROR payment-api Database connection failed
+2026-08-26 10:00:04 INFO inventory-api Request received
+2026-08-26 10:00:05 ERROR payment-api Database connection failed
+2026-08-26 10:00:06 WARN checkout-api Slow response
+2026-08-26 10:00:07 ERROR inventory-api Redis connection failed
+2026-08-26 10:00:08 ERROR payment-api Database connection failed
+2026-08-26 10:00:09 INFO payment-api Request completed
+2026-08-26 10:00:10 ERROR checkout-api Database connection failed
+2026-08-26 10:00:11 ERROR payment-api Database connection failed
+2026-08-26 10:00:12 WARN inventory-api High memory usage
+2026-08-26 10:00:13 ERROR payment-api Database connection failed
