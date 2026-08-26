@@ -26,7 +26,24 @@ def get_error_counts(file):
     return service_counts    
         
 
+# with open ("app.log","r") as file:
+#     service_counts = get_error_counts(file)
+#     for service_name, count in service_counts.items():
+#         print(service_name, count)
+
+def get_repeated_errors(file):
+    repeated_errors={}
+    for line in file:
+        if "ERROR" not in line:
+            continue
+        parts = line.split()
+        error = " ".join(parts[4:6])
+        repeated_errors[error] = repeated_errors.get(error,0)+1
+        
+    return repeated_errors    
+        
+
 with open ("app.log","r") as file:
-    service_counts = get_error_counts(file)
-    for service_name, count in service_counts.items():
-        print(service_name, count)
+    repeated_errors = get_repeated_errors(file)
+    for repeated_errors, count in repeated_errors.items():
+        print(repeated_errors,count)
