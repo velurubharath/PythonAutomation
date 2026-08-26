@@ -25,11 +25,19 @@ def get_error_counts(file):
         
     return service_counts    
         
-
-# with open ("app.log","r") as file:
-#     service_counts = get_error_counts(file)
-#     for service_name, count in service_counts.items():
-#         print(service_name, count)
+def generate_alerts(error_counts, threshold):
+    if error_counts > threshold:
+        return True
+    else:
+        return False
+    
+with open ("app.log","r") as file:
+    service_counts = get_error_counts(file)
+    threshold = 3
+    for service_name, count in service_counts.items():
+        if generate_alerts(count, threshold):
+            print(f"ALERT: {service_name} has {count} errors, which exceeds the threshold of {threshold}.")
+        
 
 def get_repeated_errors(file):
     repeated_errors={}
@@ -43,7 +51,8 @@ def get_repeated_errors(file):
     return repeated_errors    
         
 
-with open ("app.log","r") as file:
-    repeated_errors = get_repeated_errors(file)
-    for repeated_errors, count in repeated_errors.items():
-        print(repeated_errors,count)
+# with open ("app.log","r") as file:
+#     repeated_errors = get_repeated_errors(file)
+#     for repeated_errors, count in repeated_errors.items():
+#         print(repeated_errors,count)
+
