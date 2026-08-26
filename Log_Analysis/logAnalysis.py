@@ -1,13 +1,21 @@
+import argparse
+from sys import exception
+
+parser = argparse.ArgumentParser()
+parser.add_argument("logfile")
+args = parser.parse_args()
+
+
 def analyze_log(file):
     info_count = 0
     error_count = 0
     warn_count = 0
     for line in file:
-        if line.contains("INFO"):
+        if "INFO" in line:
          info_count+=1
-        elif line.contains("ERROR"):
+        elif "ERROR" in line:
             error_count+=1
-        elif line.contains("WARN"):
+        elif "WARN" in line:
             warn_count+=1
     return info_count,error_count,warn_count 
 
@@ -31,12 +39,12 @@ def generate_alerts(error_counts, threshold):
     else:
         return False
     
-with open ("app.log","r") as file:
-    service_counts = get_error_counts(file)
-    threshold = 3
-    for service_name, count in service_counts.items():
-        if generate_alerts(count, threshold):
-            print(f"ALERT: {service_name} has {count} errors, which exceeds the threshold of {threshold}.")
+# with open ("app.log","r") as file:
+#     service_counts = get_error_counts(file)
+#     threshold = 3
+#     for service_name, count in service_counts.items():
+#         if generate_alerts(count, threshold):
+#             print(f"ALERT: {service_name} has {count} errors, which exceeds the threshold of {threshold}.")
         
 
 def get_repeated_errors(file):
@@ -56,3 +64,11 @@ def get_repeated_errors(file):
 #     for repeated_errors, count in repeated_errors.items():
 #         print(repeated_errors,count)
 
+try:
+
+    with (open(args.logfile,"r")) as file:
+        print(get_error_counts(file))
+
+except FileNotFoundError:
+    print(f"Error: The file {args.logfile} was not found.")
+    exit(1)
