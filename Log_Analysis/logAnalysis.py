@@ -1,11 +1,6 @@
 import argparse
+import logging
 
-parser = argparse.ArgumentParser()
-parser.add_argument("logfile")
-#parser.add_argument("threshold")
-parser.add_argument("--threshold", type = int, default=3)
-args = parser.parse_args()
-threshold = args.threshold
 
 
 def analyze_log(file):
@@ -23,7 +18,7 @@ def analyze_log(file):
 
 # with open ("app.log","r") as file:
 #     info_count,error_count,warn_count = analyze_log(file)
-#     print(info_count,error_count,warn_count)
+#     logging.info(info_count,error_count,warn_count)
 
 
 def validate_line(line):
@@ -43,7 +38,7 @@ def get_error_counts(file):
     service_counts={}
     for line in file:
         if not validate_line(line):
-            print(f"Warning: Invalid log line format: {line.strip()}")
+            logging.warning(f"Warning: Invalid log line format: {line.strip()}")
             continue
         if "ERROR" not in line:
                 continue
@@ -52,13 +47,14 @@ def get_error_counts(file):
         service_counts[service_name] = service_counts.get(service_name,0)+1
         
     return service_counts  
-    
-with open ("app.log","r") as file:
-    service_counts = get_error_counts(file)
-    #threshold = 3
-    for service_name, count in service_counts.items():
-        if generate_alerts(count, threshold):
-            print(f"ALERT: {service_name} has {count} errors, which exceeds the threshold of {threshold}.")
+
+# def main():    
+#     with open ("app.log","r") as file:
+#         service_counts = get_error_counts(file)
+#         #threshold = 3
+#         for service_name, count in service_counts.items():
+#             if generate_alerts(count, threshold):
+#                 logging.error(f"ALERT: {service_name} has {count} errors, which exceeds the threshold of {threshold}.")
         
 
 def get_repeated_errors(file):
@@ -76,16 +72,30 @@ def get_repeated_errors(file):
 # with open ("app.log","r") as file:
 #     repeated_errors = get_repeated_errors(file)
 #     for repeated_errors, count in repeated_errors.items():
-#         print(repeated_errors,count)
+#         logging.info(repeated_errors,count)
 
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("logfile")
+    #parser.add_argument("threshold")
+    parser.add_argument("--threshold", type = int, default=3)
+    args = parser.parse_args()
+    threshold = args.threshold
 
-# try:
+    logging.basicConfig(
+        level = logging.INFO,
+        format = "%(asctime)s %(levelname)s %(message)s"
+    )
+    try:
 
-#     with (open(args.logfile,"r")) as file:
-#         print(get_error_counts(file))
+        with (open(args.logfile,"r")) as file:
+            logging.info(get_error_counts(file))
 
-# except FileNotFoundError:
-#     print(f"Error: The file {args.logfile} was not found.")
-#     exit(1)
+    except FileNotFoundError:
+        logging.error(f"Error: The file {args.logfile} was not found.")
+        exit(1)
+
+if __name__ == "__main__":
+    main()
