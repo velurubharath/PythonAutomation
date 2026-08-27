@@ -1,12 +1,11 @@
 import argparse
-from sys import exception
 
 parser = argparse.ArgumentParser()
 parser.add_argument("logfile")
 #parser.add_argument("threshold")
 parser.add_argument("--threshold", type = int, default=3)
 args = parser.parse_args()
-threshold = int(args.threshold)
+threshold = args.threshold
 
 
 def analyze_log(file):
@@ -46,6 +45,8 @@ def get_error_counts(file):
         if not validate_line(line):
             print(f"Warning: Invalid log line format: {line.strip()}")
             continue
+        if "ERROR" not in line:
+                continue
         parts = line.split()
         service_name = parts[3]
         service_counts[service_name] = service_counts.get(service_name,0)+1
@@ -66,7 +67,7 @@ def get_repeated_errors(file):
         if "ERROR" not in line:
             continue
         parts = line.split()
-        error = " ".join(parts[4:6])
+        error = " ".join(parts[4:]) 
         repeated_errors[error] = repeated_errors.get(error,0)+1
         
     return repeated_errors    
