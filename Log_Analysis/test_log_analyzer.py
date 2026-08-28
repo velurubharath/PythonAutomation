@@ -1,4 +1,4 @@
-from logAnalysis import generate_alerts, get_error_counts
+from logAnalysis import generate_alerts, get_error_counts, get_repeated_errors, validate_line
 from io import StringIO
 
 def test_generate_alerts():
@@ -21,5 +21,11 @@ def test_get_error_counts():
     result = get_error_counts(file) 
     assert result == {'payment-api': 2, 'inventory-api': 1}
 
+def test_malformed_line():
+    log_data = """2026-08-28 10:00:01 ERROR 
+    """
 
-
+    file = StringIO(log_data)
+    result = validate_line(log_data)
+    assert result is False
+    
