@@ -1,6 +1,7 @@
 from logAnalysis import generate_alerts, get_error_counts, get_repeated_errors, validate_line, read_log
 from io import StringIO
 import pytest
+from unittest.mock import Mock
 
 def test_generate_alerts():
     #above boundary
@@ -34,3 +35,39 @@ def test_read_log():
     with pytest.raises(FileNotFoundError):
         read_log("non_existenet_file.log")
 
+def test_read_file(tmp_path):
+    logfile = tmp_path / "test.log"
+    logfile.write_text("Test file for pytest")
+
+    result = read_log(logfile)
+    assert result == "Test file for pytest"
+
+def get_instance_count(client):
+    response = client.describe_instances()
+
+    return len(response["Reservations"])
+
+def test_instance_count():
+    client = Mock()
+    
+    client.describe_instances.return_value = {
+        "Reservations": [   
+            {"Instance": [{"instance-id":"id-111"}]},
+            {"Instance": [{"instance-id":"id-222"}]},
+            {"Instance": [{"instance-id":"id-333"}]}
+        ]
+    }
+
+    result = get_instance_count(client)
+    
+    assert result == 3
+
+def test_zero_instances():
+    client = Mock()
+
+    client.describe_instances.return_value = {
+        "Reservations": []
+    }
+
+    result = get_instance_count(client)
+    assert result == 0
