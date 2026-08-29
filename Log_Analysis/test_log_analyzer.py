@@ -1,5 +1,6 @@
-from logAnalysis import generate_alerts, get_error_counts, get_repeated_errors, validate_line
+from logAnalysis import generate_alerts, get_error_counts, get_repeated_errors, validate_line, read_log
 from io import StringIO
+import pytest
 
 def test_generate_alerts():
     #above boundary
@@ -28,4 +29,8 @@ def test_malformed_line():
     file = StringIO(log_data)
     result = validate_line(log_data)
     assert result is False
-    
+
+def test_read_log():
+    with pytest.raises(FileNotFoundError):
+        read_log("non_existenet_file.log")
+

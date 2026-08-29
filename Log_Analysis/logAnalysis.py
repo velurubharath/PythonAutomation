@@ -74,6 +74,9 @@ def get_repeated_errors(file):
 #     for repeated_errors, count in repeated_errors.items():
 #         logging.info(repeated_errors,count)
 
+def read_log(filename):
+    with open(filename,"r") as file:
+        return file.read()
 
 
 def main():
